@@ -4,6 +4,12 @@
 /*
   If you need to store multiple values, you can use arrays. Arrays hold "elements"
 */
+$defarray = [];
+
+$defarray[0] = 1;
+$defarray[9] = 9;
+
+var_dump($defarray);
 
 // Simple array of numbers
 $numbers = [1, 2, 3, 4, 5];

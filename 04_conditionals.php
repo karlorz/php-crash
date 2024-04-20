@@ -35,7 +35,13 @@ if ($age >= 18) {
 // Dates
 // $today = date("F j, Y, g:i a");
 
+// Get the currently set default time zone
+$current_timezone = date_default_timezone_get();
+echo "Current default time zone: " . $current_timezone;
+
 $t = date('H');
+
+echo $t;
 
 if ($t < 12) {
   echo 'Have a good morning!';
