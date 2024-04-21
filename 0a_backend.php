@@ -8,16 +8,6 @@ class Server
     // $this->services = [];
   }
 
-  // Getter for the services
-  // public function getServices() {
-  //     return $this->services;
-  // }
-
-  // Setter for the services
-  // public function setServices($services) {
-  //     $this->services = $services;
-  // }
-
   // Register a service
   public function registerService($serviceName, $service)
   {
@@ -50,23 +40,30 @@ class Server
   private function invokeMethod($service, $methodName, $params)
   {
     if ($params) {
-        $paramTypes = [];
-        $paramValues = [];
-        foreach ($params as $key => $value) {
-          $paramTypes[] = gettype($value);
-          $paramValues[] = $value;
-  
-          // Handle double to int conversion
-        //   if ($paramTypes[$key] == 'double') {  
+      $paramTypes = [];
+      $paramValues = [];
+      foreach ($params as $key => $value) {
+        $paramTypes[] = gettype($value);
+        $paramValues[] = $value;
+
+        // Handle double to int conversion
+        //   if ($paramTypes[$key] == 'double') {
         //     $paramTypes[$key] = 'integer';
         //     $paramValues[$key] = (int)$value;
         //   }
-        }
       }
-  
-      $reflection = new ReflectionClass($service);
+    }
+
+    $reflection = new ReflectionClass($service);
+    try {
       $method = $reflection->getMethod($methodName);
-      $method->invokeArgs($service, $paramValues);
+    } catch (ReflectionException $e) {
+      // Method doesn't exist
+      echo "Caught exception: ", $e->getMessage(), PHP_EOL;
+      return;
+    }
+    //   $method = $reflection->getMethod($methodName);
+    $method->invokeArgs($service, $paramValues);
     // Invoke method using reflection
   }
 }
@@ -102,26 +99,30 @@ class MemberSystem
   public function new_member($email, $age)
   {
     // ...
+    // var_dump($age);
+    $this->memberAges[$email] = $age;
   }
 
   public function getAgeByEmail($email)
   {
     // ...
+    return $this->memberAges[$email];
   }
 
+  // Remove a member by email (not implemented)
   public function remove_member($email)
   {
-    // ...
+    // Not implemented
   }
 }
 
-$server = new Server();
-$chatRoom = new ChatRoom();
-$memberSystem = new MemberSystem();
+// $server = new Server();
+// $chatRoom = new ChatRoom();
+// $memberSystem = new MemberSystem();
 
-// Register the chatRoom and memberSystem services to the server
-$server->registerService('chatroom', $chatRoom);
-$server->registerService('member', $memberSystem);
+// // Register the chatRoom and memberSystem services to the server
+// $server->registerService("chatroom", $chatRoom);
+// $server->registerService("member", $memberSystem);
 
 // JSON payload containing multiple requests
 $jsonPayload = '[
@@ -152,13 +153,16 @@ $jsonPayload = '[
     }
 ]';
 
-// Handle the JSON payload
-$server->handle($jsonPayload);
+// // Handle the JSON payload
+// $server->handle($jsonPayload);
 
-// Print the results
-echo "Chat room message count: " .
-  $chatRoom->getMessageCount() .
-  " (Expected: 2)" .
-  PHP_EOL;
-// echo "Jason's age: " . $memberSystem->getAgeByEmail("jason@example.com") . " (Expected: 12)" . PHP_EOL;
+// // Print the results
+// echo "Chat room message count: " .
+//   $chatRoom->getMessageCount() .
+//   " (Expected: 2)" .
+//   PHP_EOL;
+// echo "Jason's age: " .
+//   $memberSystem->getAgeByEmail("jason@example.com") .
+//   " (Expected: 12)" .
+//   PHP_EOL;
 ?>
