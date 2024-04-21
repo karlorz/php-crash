@@ -39,6 +39,7 @@ if (isset($_POST['submit'])) {
   <input type="text" name="name">
 </div>
 <br>
+<?php echo $name; ?>
 <?php echo $email; ?>
 <div>
 <label>Email: </label>
