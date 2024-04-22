@@ -1,13 +1,13 @@
 <?php
 include 'server.php'; 
 
-$server = new Server();
-$chatRoom = new ChatRoom();
-$memberSystem = new MemberSystem();
+// $server = new Server();
+// $chatRoom = new ChatRoom();
+// $memberSystem = new MemberSystem();
 
-// Register the chatRoom and memberSystem services to the server
-$server->registerService("chatroom", $chatRoom);
-$server->registerService("member", $memberSystem);
+// // Register the chatRoom and memberSystem services to the server
+// $server->registerService("chatroom", $chatRoom);
+// $server->registerService("member", $memberSystem);
 
 // Check if the form was submitted
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

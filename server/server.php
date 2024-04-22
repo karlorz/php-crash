@@ -73,18 +73,37 @@ class ChatRoom
 
   public function __construct()
   {
-    $this->messageCount = 0;
+    // $this->messageCount = 0;
+    session_start();
+    $this->loadMessageCount();
   }
 
   public function new_message($message)
   {
     // echo "New message: " . $message . PHP_EOL;
+    // $this->messageCount++;
     $this->messageCount++;
+    $this->saveMessageCount();
+    return $this->messageCount;
   }
 
   public function getMessageCount()
   {
     return $this->messageCount;
+  }
+
+  private function loadMessageCount()
+  {
+      if (isset($_SESSION['messageCount'])) {
+          $this->messageCount = (int)$_SESSION['messageCount'];
+      } else {
+          $this->messageCount = 0;
+      }
+  }
+
+  private function saveMessageCount()
+  {
+      $_SESSION['messageCount'] = $this->messageCount;
   }
 }
 
@@ -166,4 +185,10 @@ class MemberSystem
 //   " (Expected: 12)" .
 //   PHP_EOL;
 
-?>
+$server = new Server();
+$chatRoom = new ChatRoom();
+$memberSystem = new MemberSystem();
+
+// Register the chatRoom and memberSystem services to the server
+$server->registerService("chatroom", $chatRoom);
+$server->registerService("member", $memberSystem);
