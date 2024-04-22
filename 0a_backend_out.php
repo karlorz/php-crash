@@ -38,8 +38,30 @@ $jsonPayload = '[
     }
 ]';
 
+$jsonPayload1 = '[
+    {
+        "method": "chatroom.new_message",
+        "params": {
+            "message": "Foo"
+        }
+    },
+    {
+        "method": "chatroom.new_message",
+        "params": {
+            "message": "Hello"
+        }
+    },
+    {
+        "method": "chatroom.new_message",
+        "params": {
+            "message": "World"
+        }
+    }
+]';
+
 // Handle the JSON payload
 $server->handle($jsonPayload);
+$server->handle($jsonPayload1);
 
 // Print the results
 echo "Chat room message count: " .
