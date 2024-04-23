@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat Room</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to fetch the message count
+            function getMessageCount() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'chatroom.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/json');
+
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        var response = JSON.parse(xhr.responseText);
+                        document.getElementById('messageCount').textContent = response.count;
+                    } else {
+                        console.log('Error occurred while fetching message count');
+                    }
+                };
+
+                xhr.onerror = function() {
+                    console.log('Error occurred while fetching message count');
+                };
+
+                xhr.send();
+            }
+
+            // Function to handle form submission
+            function handleSubmit(event) {
+                event.preventDefault();
+
+                var messageInput = document.getElementById('messageInput');
+                var message = messageInput.value;
+
+                if (message.trim() !== '') {
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', 'chatroom.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            // Clear the input field
+                            messageInput.value = '';
+
+                            // Fetch the updated message count
+                            getMessageCount();
+                        } else {
+                            console.log('Error occurred while submitting message');
+                        }
+                    };
+
+                    xhr.onerror = function() {
+                        console.log('Error occurred while submitting message');
+                    };
+
+                    xhr.send('message=' + encodeURIComponent(message));
+                }
+            }
+
+            // Fetch the initial message count
+            getMessageCount();
+
+            // Refresh the message count every 5 seconds
+            setInterval(getMessageCount, 5000);
+
+            // Add submit event listener to the form
+            document.getElementById('messageForm').addEventListener('submit', handleSubmit);
+        });
+    </script>
+</head>
+<body>
+    <h1>Chat Room</h1>
+    <p>Message count: <span id="messageCount"></span></p>
+
+    <form id="messageForm">
+        <input type="text" id="messageInput" placeholder="Enter your message">
+        <button type="submit">Send</button>
+    </form>
+</body>
+</html>
